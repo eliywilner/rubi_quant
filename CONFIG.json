@@ -1,0 +1,16 @@
+{
+  "Execute on Real Account": false,
+  "Symbol": "AAPL",
+  "Shift parameter": 7,
+  "Offset parameter": 1,
+  "Buy threshold": -0.001,
+  "Sell threshold": 0.0007,
+  "Limit order max filling time": 40,
+  "N candles to close open position": 7,
+  "Long allowed": true,
+  "Short allowed": false,
+  "Trailing SL percentage": 2,
+  "Position size": 100,
+  "Start trading time": "09:31:00",
+  "End trading time": "15:58:00"
+}
