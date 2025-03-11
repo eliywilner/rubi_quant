@@ -1,0 +1,6 @@
+<AutoLogin>true</AutoLogin>
+<IbLogin>${IBKR_USERNAME}</IbLogin>
+<IbPassword>${IBKR_PASSWORD}</IbPassword>
+<ReadOnlyApi>false</ReadOnlyApi>
+<ApiPort>4002</ApiPort>
+<TradingPermissions>true</TradingPermissions>

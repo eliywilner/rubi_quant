@@ -1,6 +1,6 @@
-### Updated Dockerfile for IB Gateway (macOS + AWS Compatible) ###
+### Dockerfile for IB Gateway ###
 
-# Use Ubuntu as the base image (forcing x86_64 for Mac M1/M2 compatibility)
+# Use Ubuntu as the base image (force x86_64 for AWS & Mac M1/M2)
 FROM --platform=linux/amd64 ubuntu:22.04
 
 # Set environment variables for IB Gateway download
@@ -8,28 +8,30 @@ ENV IBDOWNLOAD=https://download.interactivebrokers.com/installers/ibgateway
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
-    wget xvfb unzip libxtst6 libxrender1 libxi6 \
-    qemu-user-static \
+    wget xvfb unzip libxtst6 libxrender1 libxi6 qemu-user-static \
     && rm -rf /var/lib/apt/lists/*
 
-# Download and install the stable IB Gateway version
+# Install IB Gateway (latest stable version)
 RUN wget -O /opt/ibgateway-installer.sh \
     "$IBDOWNLOAD/stable-standalone/ibgateway-stable-standalone-linux-x64.sh"
 
-# Make the installer executable and run it in unattended mode
+COPY ibgateway-response.txt /opt/ibgateway-response.txt
+
+# RUN chmod +x /opt/ibgateway-installer.sh && \
+#     (echo "/root/Jts/ibgateway/1030"; echo "y"; echo "y") | /opt/ibgateway-installer.sh --mode unattended --prefix /root/Jts/ibgateway
+ENV INSTALL_PATH="/root/Jts/ibgateway/1030"
+
 RUN chmod +x /opt/ibgateway-installer.sh && \
-    /opt/ibgateway-installer.sh --mode unattended --prefix /opt/ibgateway
+    echo -e "$INSTALL_PATH\ny" | /opt/ibgateway-installer.sh --mode unattended --prefix "$INSTALL_PATH" && \
+    ls -l "$INSTALL_PATH"
+
 
 # Copy IB Gateway config file for auto-login
 COPY ibgateway.xml /root/Jts/ibgateway.xml
 
-# Set up environment variables for login
-ENV IBKR_USERNAME=""
-ENV IBKR_PASSWORD=""
-ENV TWS_API_PORT=4002
 
 # Expose IB Gateway API port
 EXPOSE 4002
 
-# Start IB Gateway in headless mode with x86_64 emulation for Apple Silicon
-ENTRYPOINT ["/opt/ibgateway/ibgateway", "start"]
+# Start IB Gateway in headless mode
+CMD ["/opt/ibgateway/ibgateway", "start"]
